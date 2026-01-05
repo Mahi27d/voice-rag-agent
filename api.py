@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pypdf import PdfReader
 import numpy as np
 import faiss
@@ -9,6 +10,8 @@ import uuid
 import os
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 PDF_PATH = "data/sample.pdf"
 
@@ -27,8 +30,8 @@ index = faiss.IndexFlatL2(doc_embeddings.shape[1])
 index.add(doc_embeddings)
 
 @app.get("/")
-def root():
-    return {"status": "voice-only RAG running"}
+def home():
+    return FileResponse("static/index.html")
 
 @app.get("/ask")
 def ask(question: str):
@@ -38,7 +41,6 @@ def ask(question: str):
     answer = documents[ids[0][0]]
 
     audio_file = f"answer_{uuid.uuid4()}.mp3"
-    tts = gTTS(answer)
-    tts.save(audio_file)
+    gTTS(answer).save(audio_file)
 
     return FileResponse(audio_file, media_type="audio/mpeg", filename="answer.mp3")
