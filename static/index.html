@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voice RAG Assistant</title>
+</head>
+<body>
+    <h2>🎧 Voice RAG Assistant</h2>
+
+    <input type="text" id="question" size="60" placeholder="Ask something from the document">
+    <button onclick="ask()">Ask</button>
+
+    <br><br>
+
+    <audio id="player" controls></audio>
+
+    <script>
+        function ask() {
+            const q = document.getElementById("question").value;
+            const audio = document.getElementById("player");
+            audio.src = `/ask?question=${encodeURIComponent(q)}`;
+            audio.play();
+        }
+    </script>
+</body>
+</html>
